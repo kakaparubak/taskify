@@ -1,0 +1,27 @@
+{
+  "name": "taskify-backend",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run src/app",
+    "dev": "nodemon src/app"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/uuid": "^11.0.0",
+    "drizzle-kit": "^1.0.0-beta.20"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@types/node": "^25.5.0",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^1.0.0-beta.20",
+    "fastify": "^5.8.4",
+    "nodemon": "^3.1.14",
+    "postgres": "^3.4.8",
+    "uuid": "^13.0.0"
+  }
+}
