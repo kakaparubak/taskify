@@ -4,12 +4,14 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "./db/schema";
 import postgres from "postgres";
 import { error } from "node:console";
+import buildDb from "./db/db";
+import userRoutes from "./modules/users/users.routes";
+import {
+  serializerCompiler,
+  validatorCompiler,
+} from "fastify-type-provider-zod";
 
 // Disable prefetch as it is not supported for "Transaction" pool mode
-export const db = drizzle({
-  schema,
-  connection: { url: process.env.DATABASE_URL!, prepare: false },
-});
 
 async function buildServer() {
   const fastify = Fastify({ logger: true });
@@ -17,6 +19,10 @@ async function buildServer() {
   fastify.get("/healthcheck", (req, reply) => {
     reply.code(200).send({ message: "hello!" });
   });
+
+  fastify.register(userRoutes, { prefix: "/api/users" });
+  fastify.setValidatorCompiler(validatorCompiler);
+  fastify.setSerializerCompiler(serializerCompiler);
 
   fastify.setErrorHandler((error: FastifyError, req, reply) => {
     fastify.log.error(error);
@@ -33,11 +39,11 @@ async function buildServer() {
     reply.code(404).send({
       ok: false,
       error: {
-        code: 404,
-        message: `Route ${req.method} ${req.url} not found`
-      }
-    })
-  })
+        code: "NOT_FOUND",
+        message: `Route ${req.method} ${req.url} not found`,
+      },
+    });
+  });
 
   return fastify;
 }
