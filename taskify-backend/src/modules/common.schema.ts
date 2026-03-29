@@ -7,3 +7,8 @@ export const ErrorResponseZodSchema = z.object({
     message: z.string(),
   }),
 });
+
+export const DatalessResponseZodSchema = z.object({
+  ok: z.boolean(),
+  data: z.object(),
+});

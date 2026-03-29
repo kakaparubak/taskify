@@ -35,11 +35,6 @@ export const UserResponseZodSchema = z.object({
   }),
 });
 
-export const DeleteUserResponseZodSchema = z.object({
-  ok: z.boolean(),
-  data: z.object(),
-});
-
 export type UserIdSchema = z.infer<typeof UserIdZodSchema>;
 export type UserCreateSchema = z.infer<typeof UserCreateZodSchema>;
 export type UserSchema = z.infer<typeof UserZodSchema>;

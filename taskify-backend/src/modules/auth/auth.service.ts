@@ -1,6 +1,6 @@
 import { fastify, type FastifyInstance, type FastifyReply } from "fastify";
 import * as bcrypt from "bcrypt";
-import { refreshTokens } from "../../db/schema/refreshTokens";
+import { refreshTokensTable } from "../../db/schema/refreshTokens";
 import { eq } from "drizzle-orm";
 
 export const generateTokens = (fastify: FastifyInstance, userId: string) => {
@@ -9,7 +9,10 @@ export const generateTokens = (fastify: FastifyInstance, userId: string) => {
   return { accessToken, refreshToken };
 };
 
-export const setRefreshCookies = (reply: FastifyReply, refreshToken: string) => {
+export const setRefreshCookies = (
+  reply: FastifyReply,
+  refreshToken: string,
+) => {
   reply.setCookie("refresh_token", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -29,8 +32,10 @@ export const storeRefreshToken = async (
   expiredAt.setDate(expiredAt.getDate() + 7);
 
   const data = {
-    tokenHash, userId, expiredAt
-  }
+    tokenHash,
+    userId,
+    expiredAt,
+  };
 
-  await fastify.db.insert(refreshTokens).values(data)
+  await fastify.db.insert(refreshTokensTable).values(data);
 };

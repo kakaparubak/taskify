@@ -7,12 +7,11 @@ import {
   updateUser,
 } from "./users.handlers";
 import {
-  DeleteUserResponseZodSchema,
   UserIdZodSchema,
   UserCreateZodSchema,
   UserResponseZodSchema,
 } from "./users.schema";
-import { ErrorResponseZodSchema } from "../common.schema";
+import { DatalessResponseZodSchema, ErrorResponseZodSchema } from "../common.schema";
 
 const userRoutes: FastifyPluginAsyncZod = async (fastify: FastifyInstance) => {
   fastify.route({
@@ -64,7 +63,7 @@ const userRoutes: FastifyPluginAsyncZod = async (fastify: FastifyInstance) => {
     schema: {
       params: UserIdZodSchema,
       response: {
-        204: DeleteUserResponseZodSchema,
+        204: DatalessResponseZodSchema,
         "4xx": ErrorResponseZodSchema,
         "5xx": ErrorResponseZodSchema,
       },

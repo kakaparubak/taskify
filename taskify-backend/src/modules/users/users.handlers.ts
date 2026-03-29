@@ -4,7 +4,7 @@ import fastify, {
   type FastifyRequest,
 } from "fastify";
 import type { UserIdSchema, UserCreateSchema } from "./users.schema";
-import { users } from "../../db/schema/users";
+import { usersTable } from "../../db/schema/users";
 import { eq } from "drizzle-orm";
 import * as bcrypt from "bcrypt";
 import { handleError } from "../../utils/errorHandler";
@@ -73,14 +73,14 @@ export const updateUser =
     const passwordHash = await bcrypt.hash(req.body.password, 10);
     const { password, ...data } = req.body;
     const user = await fastify.db
-      .update(users)
+      .update(usersTable)
       .set({ ...data, passwordHash })
-      .where(eq(users.id, req.params.id))
+      .where(eq(usersTable.id, req.params.id))
       .returning({
-        id: users.id,
-        email: users.email,
-        firstName: users.firstName,
-        lastName: users.lastName,
+        id: usersTable.id,
+        email: usersTable.email,
+        firstName: usersTable.firstName,
+        lastName: usersTable.lastName,
       });
 
     if (!user)
@@ -104,8 +104,8 @@ export const deleteUser =
     reply: FastifyReply,
   ) => {
     const user = await fastify.db
-      .delete(users)
-      .where(eq(users.id, req.params.id))
+      .delete(usersTable)
+      .where(eq(usersTable.id, req.params.id))
       .returning();
 
     if (!user)
@@ -116,7 +116,7 @@ export const deleteUser =
         `User with ID ${req.params.id} not found.`,
       );
 
-    reply.code(204).send({
+    reply.code(200).send({
       ok: true,
       data: {},
     });

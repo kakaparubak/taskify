@@ -1,8 +1,8 @@
 import { boolean, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { v7 as uuidv7 } from "uuid";
-import { users } from "./users";
+import { usersTable } from "./users";
 
-export const tasks = pgTable("tasks", {
+export const tasksTable = pgTable("tasks", {
   id: uuid("id")
     .primaryKey()
     .$defaultFn(() => uuidv7()),
@@ -11,5 +11,5 @@ export const tasks = pgTable("tasks", {
   isComplete: boolean("is_complete").default(false).notNull(),
   userId: uuid("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => usersTable.id),
 });
