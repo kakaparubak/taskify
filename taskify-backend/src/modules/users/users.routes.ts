@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import {
-  createUser,
+  // createUser,
   deleteUser,
   getUserById,
   updateUser,
@@ -9,7 +9,7 @@ import {
 import {
   DeleteUserResponseZodSchema,
   UserIdZodSchema,
-  UserRegisterZodSchema,
+  UserCreateZodSchema,
   UserResponseZodSchema,
 } from "./users.schema";
 import { ErrorResponseZodSchema } from "../common.schema";
@@ -23,39 +23,39 @@ const userRoutes: FastifyPluginAsyncZod = async (fastify: FastifyInstance) => {
       response: {
         200: UserResponseZodSchema,
         "4xx": ErrorResponseZodSchema,
-        "5xx": ErrorResponseZodSchema
+        "5xx": ErrorResponseZodSchema,
       },
     },
-    handler: getUserById,
+    handler: getUserById(fastify),
   });
 
-  fastify.route({
-    method: "POST",
-    url: "/",
-    schema: {
-      body: UserRegisterZodSchema,
-      response: {
-        201: UserResponseZodSchema,
-        "4xx": ErrorResponseZodSchema,
-        "5xx": ErrorResponseZodSchema
-      },
-    },
-    handler: createUser,
-  });
+  // fastify.route({
+  //   method: "POST",
+  //   url: "/",
+  //   schema: {
+  //     body: UserCreateZodSchema,
+  //     response: {
+  //       201: UserResponseZodSchema,
+  //       "4xx": ErrorResponseZodSchema,
+  //       "5xx": ErrorResponseZodSchema,
+  //     },
+  //   },
+  //   handler: createUser(fastify),
+  // });
 
   fastify.route({
     method: "PUT",
     url: "/:id",
     schema: {
       params: UserIdZodSchema,
-      body: UserRegisterZodSchema,
+      body: UserCreateZodSchema,
       response: {
         200: UserResponseZodSchema,
         "4xx": ErrorResponseZodSchema,
-        "5xx": ErrorResponseZodSchema
+        "5xx": ErrorResponseZodSchema,
       },
     },
-    handler: updateUser,
+    handler: updateUser(fastify),
   });
 
   fastify.route({
@@ -66,10 +66,10 @@ const userRoutes: FastifyPluginAsyncZod = async (fastify: FastifyInstance) => {
       response: {
         204: DeleteUserResponseZodSchema,
         "4xx": ErrorResponseZodSchema,
-        "5xx": ErrorResponseZodSchema
+        "5xx": ErrorResponseZodSchema,
       },
     },
-    handler: deleteUser,
+    handler: deleteUser(fastify),
   });
 };
 

@@ -1,41 +1,28 @@
 import { password } from "bun";
 import * as z from "zod";
 
-const userLogin = {
-  email: z.email(),
-  password: z.string(),
-};
-
-const userPasswordHash = {
-  passwordHash: z.string(),
-};
-
-const userName = {
-  firstName: z.string().max(64),
-  lastName: z.string().max(64),
-};
-
-const userId = {
-  id: z.string(),
-};
-
 export const UserZodSchema = z.object({
-  ...userLogin,
-  ...userName,
-  ...userPasswordHash,
-});
+  id: z.string(),
+  email: z.email(),
+  passwordHash: z.string(),
+  firstName: z.string().max(64),
+  lastName: z.string().max(64)
+})
 
 export const UserIdZodSchema = z.object({
-  ...userId,
+  id: z.string(),
 });
 
-export const UserRegisterZodSchema = z.object({
-  ...userLogin,
-  ...userName,
+export const UserCreateZodSchema = z.object({
+  email: z.email(),
+  password: z.string(),
+  firstName: z.string().max(64),
+  lastName: z.string().max(64),
 });
 
 export const UserLoginZodSchema = z.object({
-  ...userLogin,
+  email: z.email(),
+  password: z.string(),
 });
 
 export const UserResponseZodSchema = z.object({
@@ -54,6 +41,5 @@ export const DeleteUserResponseZodSchema = z.object({
 });
 
 export type UserIdSchema = z.infer<typeof UserIdZodSchema>;
-export type UserRegisterSchema = z.infer<typeof UserRegisterZodSchema>;
-export type UserLoginSchema = z.infer<typeof UserLoginZodSchema>;
+export type UserCreateSchema = z.infer<typeof UserCreateZodSchema>;
 export type UserSchema = z.infer<typeof UserZodSchema>;

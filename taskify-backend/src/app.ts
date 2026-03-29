@@ -1,8 +1,6 @@
-import buildDb from "./db/db";
 import buildServer from "./server";
 
-const fastify = await buildServer();
-export const db = buildDb()
+const fastify = await buildServer()
 
 async function main() {
   try {

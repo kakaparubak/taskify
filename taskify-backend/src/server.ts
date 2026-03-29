@@ -1,15 +1,11 @@
-import Fastify, { type FastifyError } from "fastify";
+import Fastify from "fastify";
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/postgres-js";
-import * as schema from "./db/schema";
-import postgres from "postgres";
-import { error } from "node:console";
-import buildDb from "./db/db";
 import userRoutes from "./modules/users/users.routes";
-import {
-  serializerCompiler,
-  validatorCompiler,
-} from "fastify-type-provider-zod";
+import registerJwt from "./plugins/jwt";
+import registerErrorHandler from "./plugins/error";
+import registerZod from "./plugins/zod";
+import registerDb from "./plugins/db";
+import authRoutes from "./modules/auth/auth.routes";
 
 // Disable prefetch as it is not supported for "Transaction" pool mode
 
@@ -20,30 +16,13 @@ async function buildServer() {
     reply.code(200).send({ message: "hello!" });
   });
 
-  fastify.register(userRoutes, { prefix: "/api/users" });
-  fastify.setValidatorCompiler(validatorCompiler);
-  fastify.setSerializerCompiler(serializerCompiler);
+  registerDb(fastify);
+  registerZod(fastify);
+  registerErrorHandler(fastify);
+  registerJwt(fastify);
 
-  fastify.setErrorHandler((error: FastifyError, req, reply) => {
-    fastify.log.error(error);
-    reply.code(error.statusCode ?? 500).send({
-      ok: false,
-      error: {
-        code: error.code ?? "INTERNAL_ERROR",
-        message: error.message,
-      },
-    });
-  });
-
-  fastify.setNotFoundHandler((req, reply) => {
-    reply.code(404).send({
-      ok: false,
-      error: {
-        code: "NOT_FOUND",
-        message: `Route ${req.method} ${req.url} not found`,
-      },
-    });
-  });
+  fastify.register(userRoutes, { prefix: "/api/v1/users" });
+  fastify.register(authRoutes, { prefix: "/api/v1/auth" });
 
   return fastify;
 }

@@ -1,6 +1,12 @@
 import { drizzle } from "drizzle-orm/postgres-js";
-import * as schema from "./schema";
-import { relations } from "./schema"
+import * as schema from "./schema/index";
+import { relations } from "./schema/index";
+
+declare module "fastify" {
+  interface FastifyInstance {
+    db: ReturnType<typeof buildDb>;
+  }
+}
 
 const buildDb = () => {
   const db = drizzle({
@@ -8,7 +14,8 @@ const buildDb = () => {
     relations,
     connection: { url: process.env.DATABASE_URL!, prepare: false },
   });
-  return db
+
+  return db;
 };
 
-export default buildDb
+export default buildDb;
